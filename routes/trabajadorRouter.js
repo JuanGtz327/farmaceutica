@@ -1,8 +1,8 @@
 const express = require('express');
-const { getProductobyId, updateProductoCantidad } = require('../controllers/productoController');
+const { getProductobyId, updateProductoCantidad, getProductos } = require('../controllers/productoController');
 const router = express.Router();
 
-const { crearTicket, addProductoTOTicket, getTicketbyId, cerrarTicket, getTicketTotalbyId, getProductoInTicketbyId, removeProductoTicket } = require('../controllers/ticketController');
+const { crearTicket, addProductoTOTicket, getTicketbyId, cerrarTicket, getTicketTotalbyId, getProductoInTicketbyId, removeProductoTicket, updateProductoTOTicket } = require('../controllers/ticketController');
 
 router.get('/crearTicket/:idTrab', (req, res) => {
     const { idTrab } = req.params;
@@ -39,6 +39,28 @@ router.post('/deletefromTicket/:idProd/:idTrab', (req, res) => {
     });
 });
 
+router.post('/updatefromTicket/:idProd/:idTrab', (req, res) => {
+    const { idTrab,idProd } = req.params;
+    const { idTicket, Cantidad } = req.body;
+    const detalle = {Cantidad,idProd,idTicket};
+    getProductobyId(idProd, producto => {
+        getProductoInTicketbyId(idProd, productoTicket =>{
+            updateProductoTOTicket(detalle,data=>{
+                let nuevaCantidad;
+                if(Cantidad>=productoTicket[0].cantidad){
+                    nuevaCantidad = producto[0].Cantidad - (Cantidad-productoTicket[0].cantidad);
+                }else{
+                    nuevaCantidad = producto[0].Cantidad + (productoTicket[0].cantidad-Cantidad);
+                }
+                updateProductoCantidad(nuevaCantidad, idProd, data => {
+                    res.send({ msg: 'Producto del carrito actualizado' })
+                });
+            })
+        });
+    });
+    
+});
+
 router.get('/getTicket/:idTicket/:idTrab', (req, res) => {
     const { idTrab, idTicket } = req.params;
     getTicketbyId(idTicket, ticket => {
@@ -55,5 +77,11 @@ router.post('/closeTicket/:idTicket/:idTrab', (req, res) => {
     });
 });
 
+router.get('/getProductos/:idTrab', (req, res) => {
+    const { idTrab } = req.params;
+    getProductos(productos => {
+        res.send(productos);
+    })
+});
 
 module.exports = router;

@@ -55,6 +55,18 @@ const addProductoTOTicket = (detalle,callback)=>{
     });
 };
 
+const updateProductoTOTicket = (detalle,callback)=>{
+    const {idProd,Cantidad,idTicket} = detalle;
+    connection.query('UPDATE Detalletiket SET cantidad=? WHERE id_producto=? AND id_ticket=?',[Cantidad,idProd,idTicket],(error, results, fields)=>{
+        if(error){
+            console.log(error);
+            callback(-1,error.code);
+        }else{
+            callback(`Added ${results.affectedRows} rows`);
+        }
+    });
+};
+
 const removeProductoTicket = (idProd,callback)=>{
     connection.query('DELETE FROM Detalletiket WHERE id_producto=?',[idProd],(error, results, fields)=>{
         if(error){
@@ -73,6 +85,15 @@ const getProductoInTicketbyId = (idProd,callback)=>{
     });
 }
 
+const getTotalTickets = (fecha,callback)=>{
+    connection.query("SELECT sum(Total_pagar) as 'Total' FROM Ticket WHERE Fecha=?",fecha, (error, results, fields)=>{
+        if (error) throw error;
+        callback(results);
+    });
+}
+
+
+
 module.exports = {
     crearTicket,
     addProductoTOTicket,
@@ -81,5 +102,7 @@ module.exports = {
     getTickets,
     cerrarTicket,
     removeProductoTicket,
-    getProductoInTicketbyId
+    getProductoInTicketbyId,
+    updateProductoTOTicket,
+    getTotalTickets
 }

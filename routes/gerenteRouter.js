@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { insertProducto, getProductos, getProductobyId, updateProducto, deleteProducto } = require('../controllers/productoController');
+const { getTotalTickets } = require('../controllers/ticketController');
 const { getTrabajadores, getTrabajadorbyNSS, insertTrabajador, updateTrabajador, deleteTrabajador } = require('../controllers/trabajadorController');
 
 //PRODUCTOS
@@ -104,5 +105,13 @@ router.post('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
     });
 });
 
+//GANANCIAS
+router.get('/getGanancias/:idGer', (req, res) => {
+    const { idGer } = req.params;
+    const actDate = new Date(Date.now()).toISOString().substring(0, 10);
+    getTotalTickets(actDate, total => {
+        res.send({ msg: `Total de la venta actual ${total[0].Total}` });
+    });
+});
 
 module.exports = router;
