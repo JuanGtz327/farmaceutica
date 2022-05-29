@@ -1,0 +1,166 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Lista de productos
+                </h1>
+            </div>
+            <!-- On rows -->
+            <button id="btnAgr_P" type="button" class="btn btn-secondary">Agregar producto</button>
+            {{#each productos}}
+                <br><br>
+                {{Nombre}}
+                <a href="/gerente/deleteProducto/{{id_producto}}/{{../idGer}}" type="button" class="btn btn-danger">Eliminar</a>
+                <a href="/gerente/updateProducto/{{id_producto}}/{{../idGer}}" id="btnEdi_P" type="button" class="btn btn-warning">Editar</a>
+            {{/each}}
+            
+            <!--
+FORMULARIO DE AGREGAR
+                     -->
+            <div id="overlayAgr_P" class="overlay">
+                <div id="popupAgr_P" class="popup">
+                    <a href="#" id="btnCloseAgr_P" class="btn-close-popup"><i class="fas fa-times"></i></a>
+                    <h3>
+                        Agregar producto a inventario.
+                    </h3>
+                    <form action="/gerente/addProducto/{{idGer}}" method="POST">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nombre del producto:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="Nombre">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Descripcion:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="Descripcion">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Precio:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Precio_venta">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Stock:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Cantidad">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Peso:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Gramaje">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Costo:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Costo">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Fecha Caducidad:</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="Fecha_caducidad" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Guardar datos</button>
+                    </form>
+                </div>
+            </div>
+            <!--
+FORMULARIO DE EDITAR
+                     -->
+            {{#if prodEdit}}
+            <div id="overlayEdi_P" class="overlay active">
+                <div id="popup" class="popup">
+                    <a href="#" id="btnCloseEdi_P" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+            {{else}}         
+            <div id="overlayEdi_P" class="overlay">
+                <div id="popup" class="popup">
+                    <a href="#" id="btnCloseEdi_P" class="btn-close-popup"><i class="fas fa-times"></i></a>
+            {{/if}}
+                    <!--Esto es el tache pa salir de la ventana emerjente-->
+                    <h3>
+                        Editar producto del inventario.
+                    </h3>
+                    <form action="/gerente/updateProducto/{{prodEdit.id_producto}}/{{idGer}}" method="POST">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nombre del producto:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="Nombre" value="{{prodEdit.Nombre}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Descripcion:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="Descripcion" value="{{prodEdit.Descripcion}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Precio:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Precio_venta" value="{{prodEdit.Precio_venta}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Stock:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Cantidad" value="{{prodEdit.Cantidad}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Peso:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Gramaje" value="{{prodEdit.Gramaje}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Costo:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Costo" value="{{prodEdit.Costo}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Fecha Caducidad:</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="Fecha_caducidad" required value="{{prodEdit.Fecha_caducidad}}">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Guardar datos</button>
+                    </form>
+                </div>
+            </div>
+            <!--
+FORMULARIO DE ELIMINAR
+                     -->
+            {{#if prodDel}}
+            <div id="overlayEli_P" class="overlay active">
+                <div id="popup" class="popup">
+                    <a href="#" id="btnCloseEli_P" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+            {{else}}         
+            <div id="overlayEli_P" class="overlay">
+                <div id="popup" class="popup">
+                    <a href="#" id="btnCloseEli_P" class="btn-close-popup"><i class="fas fa-times"></i></a>
+            {{/if}}
+                    <h3>
+                        ¿Estas seguro de eliminar el producto?
+                    </h3>
+                    <form action="/gerente/deleteProducto/{{prodDel.id_producto}}/{{idGer}}" method="POST">
+                        <div>
+                            <button style="margin:50px" type="submit" class="btn btn-danger">Eliminar</button>
+                            <a href="/gerente/getProductos/{{idGer}}" style="margin:50px" type="submit" class="btn btn-warning">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+</div>
+<script type="text/javascript" src="/static/assets/JS/popup.js"></script>

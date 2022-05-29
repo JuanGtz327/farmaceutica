@@ -1,0 +1,166 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Lista de trabajadores
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+        <button id="btnAgr_T" type="button" class="btn btn-secondary">Agregar trabajador</button>
+        {{#each trabajadores}}
+            <br><br>
+            {{Nombres}}
+            <a href="/gerente/deleteTrabajador/{{NSS}}/{{../idGer}}" type="button" class="btn btn-danger">Eliminar</a>
+            <a href="/gerente/updateTrabajador/{{NSS}}/{{../idGer}}" id="btnEli_T" type="button" class="btn btn-warning">Editar</a>
+        {{/each}}
+        <!--
+FORMULARIO DE AGREGAR
+                     -->
+        <div id="overlayAgr_T" class="overlay">
+            <div id="popupAgr_T" class="popup">
+                <a href="#" id="btnCloseAgr_T" class="btn-close-popup"><i class="fas fa-times"></i></a>
+                <h3>
+                    Agregar trabajador.
+                </h3>
+                <form action="/gerente/addTrabajador/{{idGer}}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Nombre del trabajador:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Nombres">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Apellido del trabajador:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Apellidos">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">NSS:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="NSS">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Fecha de contratacion:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" name="Fecha_contrato" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Fecha de nacimiento:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" name="Fecha_nacimiento" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Salario:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Salario">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Contraseña:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="Contrasena">
+                        </div>
+                    </div>
+                    <input type="hidden" value="{{idGer}}" name="id_administrador">
+                    <button type="submit" class="btn btn-success">Guardar datos</button>
+                </form>
+            </div>
+        </div>
+        <!--
+FORMULARIO DE EDITAR
+                     -->
+        {{#if trabEdit}}
+        <div id="overlayEdi_T" class="overlay active">
+            <div id="popup" class="popup">
+                <a href="/gerente/getTrabajadores/{{idGer}}" id="btnCloseEdi_T" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+        {{else}}         
+        <div id="overlayEdi_T" class="overlay">
+            <div id="popup" class="popup">
+                <a href="#" id="btnCloseEdi_T" class="btn-close-popup"><i class="fas fa-times"></i></a>
+        {{/if}}
+                <!--Esto es el tache pa salir de la ventana emerjente-->
+                <h3>
+                    Editar trabajador.
+                </h3>
+                <form action="/gerente/updateTrabajador/{{trabEdit.NSS}}/{{idGer}}" method="POST">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Nombre del trabajador:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Nombres" value="{{trabEdit.Nombres}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Apellido del trabajador:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Apellidos" value="{{trabEdit.Apellidos}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">NSS:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="NSS" value="{{trabEdit.NSS}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Fecha de contratacion:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" name="Fecha_contrato" required value="{{trabEdit.Fecha_contrato}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Fecha de nacimiento:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" name="Fecha_nacimiento" required value="{{trabEdit.Fecha_nacimiento}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Salario:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Salario" value="{{trabEdit.Salario}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Contraseña:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="Contrasena" value="{{trabEdit.Contrasena}}">
+                        </div>
+                    </div>
+                    <input type="hidden" value="{{idGer}}" name="id_administrador">
+                    <button type="submit" class="btn btn-success">Guardar datos</button>
+                </form>
+            </div>
+        </div>
+        <!--
+FORMULARIO DE ELIMINAR
+                     -->
+        {{#if trabDel}}
+        <div id="overlayEli_T" class="overlay active">
+            <div id="popup" class="popup">
+                <a href="#" id="btnCloseEli_T" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+        {{else}}         
+        <div id="overlayEli_T" class="overlay">
+            <div id="popup" class="popup">
+                <a href="#" id="btnCloseEli_T" class="btn-close-popup"><i class="fas fa-times"></i></a>
+        {{/if}}
+                <h3>
+                    ¿Estas seguro de eliminar el trabajador?
+                </h3>
+                <form action="/gerente/deleteTrabajador/{{trabDel.NSS}}/{{idGer}}" method="POST">
+                    <div>
+                        <button style="margin:50px" type="submit" class="btn btn-danger">Eliminar</button>
+                        <a href="/gerente/getTrabajadores/{{idGer}}" style="margin:50px" type="submit" class="btn btn-warning">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<script type="text/javascript" src="/static/assets/JS/popupT.js"></script>
