@@ -5,6 +5,12 @@
                 <h1 class="page-header">
                     {{msg}}
                 </h1>
+                <h3>
+                    <form action="/gerente/getGananciasDay/{{idGer}}" method="POST">
+                        <label for="">Fecha de venta:</label><input type="date" name="Fecha" required>
+                        <button type="submit" class="btn btn-success">Consultar Ganancias</button>
+                    </form>
+                </h3>
             </div>
         </div>
     </div>

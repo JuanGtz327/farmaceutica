@@ -30,14 +30,14 @@ const getTickets = (callback)=>{
 }
 
 const getTicketbyId = (idTicket,callback)=>{
-    connection.query("SELECT p.Nombre,d.cantidad,p.costo*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
+    connection.query("SELECT p.Nombre,d.cantidad,p.Precio_venta*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
 }
 
 const getTicketTotalbyId = (idTicket,callback)=>{
-    connection.query("SELECT sum(p.costo*d.cantidad) as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
+    connection.query("SELECT sum(p.Precio_venta*d.cantidad) as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
@@ -91,8 +91,6 @@ const getTotalTickets = (fecha,callback)=>{
         callback(results);
     });
 }
-
-
 
 module.exports = {
     crearTicket,

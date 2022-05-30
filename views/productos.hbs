@@ -8,14 +8,35 @@
                 </h1>
             </div>
             <!-- On rows -->
-            <button id="btnAgr_P" type="button" class="btn btn-secondary">Agregar producto</button>
+            <button id="btnAgr_P" type="button" class="btn btn-success">Agregar producto</button>
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Gramaje</th>
+                    <th scope="col">Costo</th>
+                    <th scope="col">Precio Venta</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Fecha Caducidad</th>
+                    </tr>
+                </thead>
+                <tbody>
             {{#each productos}}
-                <br><br>
-                {{Nombre}}
-                <a href="/gerente/deleteProducto/{{id_producto}}/{{../idGer}}" type="button" class="btn btn-danger">Eliminar</a>
-                <a href="/gerente/updateProducto/{{id_producto}}/{{../idGer}}" id="btnEdi_P" type="button" class="btn btn-warning">Editar</a>
+                    <tr>
+                    <th>{{Nombre}}</th>
+                    <td>{{Cantidad}}</td>
+                    <td>{{Gramaje}}mg</td>
+                    <td>${{Costo}}</td>
+                    <td>${{Precio_venta}} </td>
+                    <td>{{Descripcion}} </td>
+                    <td>{{Fecha_caducidad}} </td>
+                    <td><a href="/gerente/deleteProducto/{{id_producto}}/{{../idGer}}" type="button" class="btn btn-danger">Eliminar</a></td>
+                    <td><a href="/gerente/updateProducto/{{id_producto}}/{{../idGer}}" id="btnEdi_P" type="button" class="btn btn-warning">Editar</a></td>
+                    </tr>
             {{/each}}
-            
+                </tbody>
+            </table>
             <!--
 FORMULARIO DE AGREGAR
                      -->

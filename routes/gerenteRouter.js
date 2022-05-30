@@ -4,12 +4,19 @@ const router = express.Router();
 const { insertProducto, getProductos, getProductobyId, updateProducto, deleteProducto } = require('../controllers/productoController');
 const { getTotalTickets } = require('../controllers/ticketController');
 const { getTrabajadores, getTrabajadorbyNSS, insertTrabajador, updateTrabajador, deleteTrabajador } = require('../controllers/trabajadorController');
+const { getParsedDate } = require('../helpers/extras');
+
+router.get('/:idGer',(req,res)=>{
+    const {idGer} = req.params;
+    res.render('index',{idGer});
+})
 
 //PRODUCTOS
 router.get('/getProductos/:idGer', (req, res) => {
     const { idGer } = req.params;
     getProductos(productos => {
         //res.send(productos);
+        productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
         res.render('productos',{idGer,productos});
     });
 });
@@ -36,6 +43,7 @@ router.post('/addProducto/:idGer', (req, res) => {
 router.get('/updateProducto/:idProd/:idGer', (req, res) => {
     const { idProd, idGer } = req.params;
     getProductos(productos => {
+        productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
         getProductobyId(idProd, producto => {
             const prodEdit = producto[0];
             res.render('productos',{idGer,prodEdit,productos});
@@ -54,6 +62,7 @@ router.post('/updateProducto/:idProd/:idGer', (req, res) => {
 router.get('/deleteProducto/:idProd/:idGer', (req, res) => {
     const { idProd, idGer } = req.params;
     getProductos(productos => {
+        productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
         getProductobyId(idProd, producto => {
             const prodDel = producto[0];
             res.render('productos',{idGer,prodDel,productos});
@@ -74,6 +83,10 @@ router.get('/getTrabajadores/:idGer', (req, res) => {
     const { idGer } = req.params;
     getTrabajadores(trabajadores => {
         //res.send(trabajadores);
+        trabajadores.map(trabajador=>{
+            trabajador.Fecha_nacimiento=getParsedDate(trabajador.Fecha_nacimiento.toString());
+            trabajador.Fecha_contrato=getParsedDate(trabajador.Fecha_contrato.toString());
+        });
         res.render('trabajadores',{trabajadores,idGer});
     })
 });
@@ -100,6 +113,10 @@ router.post('/addTrabajador/:idGer', (req, res) => {
 router.get('/updateTrabajador/:idTrab/:idGer', (req, res) => {
     const { idTrab, idGer } = req.params;
     getTrabajadores(trabajadores => {
+        trabajadores.map(trabajador=>{
+            trabajador.Fecha_nacimiento=getParsedDate(trabajador.Fecha_nacimiento.toString());
+            trabajador.Fecha_contrato=getParsedDate(trabajador.Fecha_contrato.toString());
+        });
         getTrabajadorbyNSS(idTrab, trabajador => {
             const trabEdit = trabajador[0];
             res.render('trabajadores',{idGer,trabEdit,trabajadores});
@@ -118,6 +135,10 @@ router.post('/updateTrabajador/:idTrab/:idGer', (req, res) => {
 router.get('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
     const { idTrab, idGer } = req.params;
     getTrabajadores(trabajadores => {
+        trabajadores.map(trabajador=>{
+            trabajador.Fecha_nacimiento=getParsedDate(trabajador.Fecha_nacimiento.toString());
+            trabajador.Fecha_contrato=getParsedDate(trabajador.Fecha_contrato.toString());
+        });
         getTrabajadorbyNSS(idTrab, trabajador => {
             const trabDel = trabajador[0];
             res.render('trabajadores',{idGer,trabDel,trabajadores});
@@ -139,8 +160,28 @@ router.get('/getGanancias/:idGer', (req, res) => {
     const actDate = new Date(Date.now()).toISOString().substring(0, 10);
     getTotalTickets(actDate, total => {
         //res.send({ msg: `Total de la venta actual ${total[0].Total}` });
-        let msg = `Total de la venta actual $${total[0].Total}`;
-        res.render('ganancias',{msg})
+        let msg;
+        if(total==null){
+            msg = `Total de la venta actual $${total[0].Total}`;
+        }else{
+            msg = `Aun no hay ventas generadas el dia de hoy`;
+        }
+        res.render('ganancias',{msg,idGer})
+    });
+});
+
+router.post('/getGananciasDay/:idGer', (req, res) => {
+    const { idGer } = req.params;
+    const { Fecha } = req.body;
+    getTotalTickets(Fecha, total => {
+        //res.send({ msg: `Total de la venta actual ${total[0].Total}` });
+        let msg;
+        if(total[0].Total!=null){
+            msg = `El total de la venta del dia ${Fecha} fue de $${total[0].Total}`;
+        }else{
+            msg = `No hay ventas generadas`;
+        }
+        res.render('ganancias',{msg,idGer})
     });
 });
 
