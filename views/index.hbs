@@ -1,9 +1,19 @@
+
 <div id="page-wrapper">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row">            
             <div class="col-lg-12">
+                {{#if err}}
+                    <h2 style="color: red;">{{err}}</h2>
+                {{/if}}
                 <h1 class="page-header">
-                    Bienvenid@
+                    {{#if user.Nombres}}
+                        Hola de nuevo {{user.Nombres}}!
+                    {{else if user.nombres}}
+                        Hola de nuevo {{user.nombres}}!
+                    {{else}}
+                        Bienvenido
+                    {{/if}}
                 </h1>
                 <div class="imagen" style="float: right">
                     <img class="logo" src="/static/img/logo.jpg">
@@ -15,5 +25,52 @@
                 </div>
             </div>
         </div>
+        <div id="overlayAgr_logi" class="overlay">
+            <div id="popupAgr_logi" class="popup">
+                <a href="#" id="btnCloseAgr_logi" class="btn-close-popup"><i class="fas fa-times"></i></a>
+                <h3>
+                    Iniciar Sesion
+                </h3>
+                <form action="/login" method="POST">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Usuario:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Usuario">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Contraseña:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Iniciar Sesion</button>
+                </form>
+            </div>
+        </div>
+        <div id="overlayEdi_logi" class="overlay">
+            <div id="popupEdi_logi" class="popup">
+                <a href="#" id="btnCloseEdi_logi" class="btn-close-popup"><i class="fas fa-times"></i></a>
+                <h3>
+                    Iniciar Sesion
+                </h3>
+                <form action="/loginTrab" method="POST">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">NSS:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="NSS">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Contraseña:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Iniciar Sesion</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+<script type="text/javascript" src="/static/assets/JS/popupLog.js"></script>

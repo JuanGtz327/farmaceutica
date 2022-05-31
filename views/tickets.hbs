@@ -22,9 +22,13 @@
                     <tr>
                     <th>{{id_ticket}}</th>
                     <th>{{Fecha}}</th>
-                    <td>{{Total_pagar}}</td>
+                    <td>${{Total_pagar}}</td>
                     <td><a href="/trabajador/getTicket/{{id_ticket}}/{{../idTrab}}" id="btnAgr_Tick" type="button" class="btn btn-success">Detalles</a></td>
-                    <td><a href="/trabajador/getProductos/{{id_ticket}}/{{../idTrab}}" type="button" class="btn btn-warning">Añadir Productos</a></td>
+                    {{#unless Cerrado}}
+                        <td><a href="/trabajador/getProductos/{{id_ticket}}/{{../idTrab}}" type="button" class="btn btn-warning">Añadir Productos</a></td>
+                    {{else}}
+                        <td><h4 style="color: red;">Ticket Cerrado</h4></td>
+                    {{/unless}}
                     </tr>
                 {{/each}}
                 </tbody>
@@ -57,8 +61,9 @@
                             <th>{{Nombre}}</th>
                             <th>{{cantidad}}</th>
                             <th>${{Total}}</th>
+                            {{#unless Cerrado}}
                             <td>
-                                <form action="/trabajador/updatefromTicket/{{id_producto}}/{{../idTrab}}" method="POST">
+                                <form action="/trabajador/updatefromTicket/{{../idTicket}}/{{id_producto}}/{{../idTrab}}" method="POST">
                                     <div class="form-group row">
                                         <div class="col-sm-6">
                                             <input style="width: 100%;" type="number" class="form-control" name="Cantidad" max="{{detProd.Cantidad}}" min="0">
@@ -71,6 +76,7 @@
                                 </form>
                             </td>
                             <td><form action="/trabajador/deletefromTicket/{{../idTicket}}/{{id_producto}}/{{../idTrab}}" method="POST"><button style="width: 100%;" type="submit" class="btn btn-danger">Eliminar</button></form></td>
+                            {{/unless}}
                             </tr>
                         {{/each}}
                             <tr>
@@ -80,9 +86,13 @@
                             </tr>
                         </tbody>
                     </table>
-                    <form action="/trabajador/closeTicket/{{idTicket}}/{{idTrab}}" method="post">
-                        <button type="submit" class="btn btn-danger">Cerrar ticket</button>
-                    </form>
+                    {{#each detTicket}}
+                        {{#unless Cerrado}}
+                        <form action="/trabajador/closeTicket/{{../idTicket}}/{{../idTrab}}" method="post">
+                            <button type="submit" class="btn btn-danger">Cerrar ticket</button>
+                        </form>
+                        {{/unless}}
+                    {{/each}}
                 </div>
             </div>
         </div>

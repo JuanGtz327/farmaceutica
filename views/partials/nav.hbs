@@ -6,33 +6,67 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/gerente/{{idGer}}">Sistema de Inventario Farmacéutico</a>
+        {{#if user.usuario}}
+            <a class="navbar-brand" href="/gerente/{{idGer}}">Sistema de Inventario Farmacéutico</a>
+        {{else if user.NSS}}
+            <a class="navbar-brand" href="/trabajador/{{idTrab}}">Sistema de Inventario Farmacéutico</a>
+        {{else}}
+            <a class="navbar-brand" href="/">Sistema de Inventario Farmacéutico</a>
+        {{/if}}
+        
     </div>
     <ul class="nav navbar-right top-nav">
         <li class="dropdown">
-            <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Iniciar Sesion<b
+            {{#if user}}
+                <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Menu<b
                     class="caret"></b></a>
+            {{else}}
+                <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Iniciar Sesion<b
+                    class="caret"></b></a>
+            {{/if}}
             <ul class="dropdown-menu">
-                <li>
-                    <a href=""><i class="fa fa-fw fa-power-off"></i> Salir</a>
-                </li>
+                {{#if user}}
+                    <li>
+                        <a href="/logout"><i class="fa fa-fw fa-power-off"></i> Salir</a>
+                    </li>
+                {{else}}
+                    <li>
+                        <a href="#" id="btnAgr_logi" type="button"><i class="fa-solid fa-arrow-right-to-bracket"></i> Gerente</a>
+                    </li>
+                    <li>
+                        <a href="#" id="btnEdi_logi" type="button"><i class="fa-solid fa-arrow-right-to-bracket"></i> Trabajador</a>
+                    </li>
+                {{/if}}
             </ul>
         </li>
     </ul>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <li class="#">
-                <a href="/gerente/{{idGer}}"><span class=""></span></i>Inicio</a>
-            </li>
-            <li class="#">
-                <a href="/gerente/getProductos/{{idGer}}"><span class=""></span> Lista de productos</a>
-            </li>
-            <li class="">
-                <a href="/gerente/getTrabajadores/{{idGer}}"><span class=""></span> Lista de trabajadores </a>
-            </li>
-            <li class="">
-                <a href="/gerente/getGanancias/{{idGer}}"><span class=""></span> Ventas</a>
-            </li>
+            {{#if user.usuario}}
+                <li class="#">
+                    <a href="/gerente/{{idGer}}"><span class=""></span></i>Inicio</a>
+                </li>
+                <li class="#">
+                    <a href="/gerente/getProductos/{{idGer}}"><span class=""></span> Lista de productos</a>
+                </li>
+                <li class="">
+                    <a href="/gerente/getTrabajadores/{{idGer}}"><span class=""></span> Lista de trabajadores </a>
+                </li>
+                <li class="">
+                    <a href="/gerente/getGanancias/{{idGer}}"><span class=""></span> Ventas</a>
+                </li>
+            {{else if user.NSS}}
+                <li class="#">
+                    <a href="/trabajador/{{idTrab}}"><span class=""></span></i>Inicio</a>
+                </li>
+                <li class="#">
+                    <a href="/trabajador/getTickets/{{idTrab}}"><span class=""></span> Lista de tickets</a>
+                </li>
+            {{else}}
+                <li class="#">
+                    <a href="/"><span class=""></span></i>Inicio</a>
+                </li>
+            {{/if}}
         </ul>
     </div>
 </nav>

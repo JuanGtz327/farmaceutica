@@ -7,8 +7,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-//require('./config/passport')
-//require('./db/db')
+require('./config/passport')
 
 app.set('views',path.join(__dirname,'views'));
 app.engine('hbs',hbs.engine({

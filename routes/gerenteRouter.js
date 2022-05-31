@@ -6,13 +6,15 @@ const { getTotalTickets } = require('../controllers/ticketController');
 const { getTrabajadores, getTrabajadorbyNSS, insertTrabajador, updateTrabajador, deleteTrabajador } = require('../controllers/trabajadorController');
 const { getParsedDate } = require('../helpers/extras');
 
-router.get('/:idGer',(req,res)=>{
+const {gerAuth} = require('../helpers/auth');
+
+router.get('/:idGer',gerAuth,(req,res)=>{
     const {idGer} = req.params;
     res.render('index',{idGer});
 })
 
 //PRODUCTOS
-router.get('/getProductos/:idGer', (req, res) => {
+router.get('/getProductos/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     getProductos(productos => {
         //res.send(productos);
@@ -21,14 +23,14 @@ router.get('/getProductos/:idGer', (req, res) => {
     });
 });
 
-router.get('/getProducto/:idProd/:idGer', (req, res) => {
+router.get('/getProducto/:idProd/:idGer',gerAuth, (req, res) => {
     const { idProd, idGer } = req.params;
     getProductobyId(idProd, producto => {
         res.send(producto);
     });
 });
 
-router.post('/addProducto/:idGer', (req, res) => {
+router.post('/addProducto/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     insertProducto(req.body, idGer, (data, err) => {
         if (data == -1) {
@@ -40,7 +42,7 @@ router.post('/addProducto/:idGer', (req, res) => {
     })
 });
 
-router.get('/updateProducto/:idProd/:idGer', (req, res) => {
+router.get('/updateProducto/:idProd/:idGer',gerAuth, (req, res) => {
     const { idProd, idGer } = req.params;
     getProductos(productos => {
         productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
@@ -51,7 +53,7 @@ router.get('/updateProducto/:idProd/:idGer', (req, res) => {
     });
 });
 
-router.post('/updateProducto/:idProd/:idGer', (req, res) => {
+router.post('/updateProducto/:idProd/:idGer',gerAuth, (req, res) => {
     const { idProd, idGer } = req.params;
     updateProducto(req.body, idGer, idProd, data => {
         //res.send({ msg: 'Producto actualizado' });
@@ -59,7 +61,7 @@ router.post('/updateProducto/:idProd/:idGer', (req, res) => {
     })
 });
 
-router.get('/deleteProducto/:idProd/:idGer', (req, res) => {
+router.get('/deleteProducto/:idProd/:idGer',gerAuth, (req, res) => {
     const { idProd, idGer } = req.params;
     getProductos(productos => {
         productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
@@ -70,7 +72,7 @@ router.get('/deleteProducto/:idProd/:idGer', (req, res) => {
     });
 });
 
-router.post('/deleteProducto/:idProd/:idGer', (req, res) => {
+router.post('/deleteProducto/:idProd/:idGer',gerAuth, (req, res) => {
     const { idProd, idGer } = req.params;
     deleteProducto(idProd, data => {
         //res.send({ msg: 'Producto eliminado' });
@@ -79,7 +81,7 @@ router.post('/deleteProducto/:idProd/:idGer', (req, res) => {
 });
 
 //TRABAJADOR
-router.get('/getTrabajadores/:idGer', (req, res) => {
+router.get('/getTrabajadores/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     getTrabajadores(trabajadores => {
         //res.send(trabajadores);
@@ -91,14 +93,14 @@ router.get('/getTrabajadores/:idGer', (req, res) => {
     })
 });
 
-router.get('/getTrabajador/:idTrab/:idGer', (req, res) => {
+router.get('/getTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
     const { idTrab, idGer } = req.params;
     getTrabajadorbyNSS(idTrab, trabajador => {
         res.send(trabajador);
     });
 });
 
-router.post('/addTrabajador/:idGer', (req, res) => {
+router.post('/addTrabajador/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     insertTrabajador(req.body, idGer, (data, err) => {
         if (data == -1) {
@@ -110,7 +112,7 @@ router.post('/addTrabajador/:idGer', (req, res) => {
     })
 });
 
-router.get('/updateTrabajador/:idTrab/:idGer', (req, res) => {
+router.get('/updateTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
     const { idTrab, idGer } = req.params;
     getTrabajadores(trabajadores => {
         trabajadores.map(trabajador=>{
@@ -118,13 +120,13 @@ router.get('/updateTrabajador/:idTrab/:idGer', (req, res) => {
             trabajador.Fecha_contrato=getParsedDate(trabajador.Fecha_contrato.toString());
         });
         getTrabajadorbyNSS(idTrab, trabajador => {
-            const trabEdit = trabajador[0];
+            const trabEdit = trabajador;
             res.render('trabajadores',{idGer,trabEdit,trabajadores});
         });
     });
 });
 
-router.post('/updateTrabajador/:idTrab/:idGer', (req, res) => {
+router.post('/updateTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
     const { idTrab, idGer } = req.params;
     updateTrabajador(req.body, idGer, idTrab, data => {
         //res.send({ msg: 'trabajador actualizado' });
@@ -132,7 +134,7 @@ router.post('/updateTrabajador/:idTrab/:idGer', (req, res) => {
     })
 });
 
-router.get('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
+router.get('/deleteTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
     const { idTrab, idGer } = req.params;
     getTrabajadores(trabajadores => {
         trabajadores.map(trabajador=>{
@@ -140,13 +142,13 @@ router.get('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
             trabajador.Fecha_contrato=getParsedDate(trabajador.Fecha_contrato.toString());
         });
         getTrabajadorbyNSS(idTrab, trabajador => {
-            const trabDel = trabajador[0];
+            const trabDel = trabajador;
             res.render('trabajadores',{idGer,trabDel,trabajadores});
         });
     });
 });
 
-router.post('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
+router.post('/deleteTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
     const { idTrab, idGer } = req.params;
     deleteTrabajador(idTrab, data => {
         //res.send({ msg: 'trabajador eliminado' });
@@ -155,7 +157,7 @@ router.post('/deleteTrabajador/:idTrab/:idGer', (req, res) => {
 });
 
 //GANANCIAS
-router.get('/getGanancias/:idGer', (req, res) => {
+router.get('/getGanancias/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     const actDate = new Date(Date.now()).toISOString().substring(0, 10);
     getTotalTickets(actDate, total => {
@@ -170,7 +172,7 @@ router.get('/getGanancias/:idGer', (req, res) => {
     });
 });
 
-router.post('/getGananciasDay/:idGer', (req, res) => {
+router.post('/getGananciasDay/:idGer',gerAuth, (req, res) => {
     const { idGer } = req.params;
     const { Fecha } = req.body;
     getTotalTickets(Fecha, total => {

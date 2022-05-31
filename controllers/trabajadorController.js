@@ -10,7 +10,7 @@ const getTrabajadores = (callback)=>{
 const getTrabajadorbyNSS = (idTrab,callback)=>{
     connection.query("SELECT * FROM Trabajador WHERE NSS=?",idTrab, (error, results, fields)=>{
         if (error) throw error;
-        callback(results);
+        callback(results[0]);
     });
 }
 

@@ -11,7 +11,18 @@ const crearTicket = (idTrab,fecha,callback)=>{
     });
 };
 
-const cerrarTicket = (idTicket,total,callback)=>{
+const cerrarTicket = (idTicket,callback)=>{
+    connection.query('UPDATE Ticket SET Cerrado=? WHERE id_ticket=?',[1,idTicket],(error, results, fields)=>{
+        if(error){
+            console.log(error);
+            callback(-1,error.code);
+        }else{
+            callback(`Added ${results.affectedRows} rows`);
+        }
+    });
+};
+
+const setTicketTotal = (idTicket,total,callback)=>{
     connection.query('UPDATE Ticket SET Total_pagar=? WHERE id_ticket=?',[total,idTicket],(error, results, fields)=>{
         if(error){
             console.log(error);
@@ -30,7 +41,7 @@ const getTicketsByid = (idTrab,callback)=>{
 }
 
 const getTicketbyId = (idTicket,callback)=>{
-    connection.query("SELECT p.id_producto,p.Nombre,d.cantidad,p.Precio_venta*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where d.id_ticket=t.id_ticket and p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
+    connection.query("SELECT p.id_producto,p.Nombre,d.cantidad,t.Cerrado,p.Precio_venta*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where d.id_ticket=t.id_ticket and p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
@@ -86,7 +97,7 @@ const getProductoInTicketbyId = (idProd,id_ticket,callback)=>{
 }
 
 const getTotalTickets = (fecha,callback)=>{
-    connection.query("SELECT sum(Total_pagar) as 'Total' FROM Ticket WHERE Fecha=?",fecha, (error, results, fields)=>{
+    connection.query("SELECT sum(Total_pagar) as 'Total' FROM Ticket WHERE Fecha=? and Cerrado=?",[fecha,1], (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
@@ -102,5 +113,6 @@ module.exports = {
     removeProductoTicket,
     getProductoInTicketbyId,
     updateProductoTOTicket,
-    getTotalTickets
+    getTotalTickets,
+    setTicketTotal
 }

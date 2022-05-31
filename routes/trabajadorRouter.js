@@ -2,18 +2,26 @@ const express = require('express');
 const { getProductobyId, updateProductoCantidad, getProductos } = require('../controllers/productoController');
 const router = express.Router();
 
-const { crearTicket, addProductoTOTicket, getTicketbyId, cerrarTicket, getTicketTotalbyId, getProductoInTicketbyId, removeProductoTicket, updateProductoTOTicket, getTicketsByid } = require('../controllers/ticketController');
+const { crearTicket, addProductoTOTicket, getTicketbyId, cerrarTicket, getTicketTotalbyId, getProductoInTicketbyId, removeProductoTicket, updateProductoTOTicket, getTicketsByid, setTicketTotal } = require('../controllers/ticketController');
 const { getParsedDate } = require('../helpers/extras');
 
-router.get('/crearTicket/:idTrab', (req, res) => {
+const {trabAuth} = require('../helpers/auth');
+
+router.get('/:idTrab',trabAuth,(req,res)=>{
+    const {idTrab} = req.params;
+    res.render('index',{idTrab});
+})
+
+router.get('/crearTicket/:idTrab',trabAuth, (req, res) => {
     const { idTrab } = req.params;
     const actDate = new Date(Date.now()).toISOString().substring(0, 10);
     crearTicket(idTrab, actDate, data => {
-        res.send({ msg: 'Ticket creado' });
+        //res.send({ msg: 'Ticket creado' });
+        res.redirect(`/trabajador/getTickets/${idTrab}`)
     });
 });
 
-router.get('/addtoTicket/:idTicket/:idProd/:idTrab', (req, res) => {
+router.get('/addtoTicket/:idTicket/:idProd/:idTrab',trabAuth, (req, res) => {
     const { idTrab,idProd,idTicket } = req.params;
     getProductos(productos => {
         getProductobyId(idProd,producto=>{
@@ -25,36 +33,45 @@ router.get('/addtoTicket/:idTicket/:idProd/:idTrab', (req, res) => {
     })
 });
 
-router.post('/addtoTicket/:idTrab', (req, res) => {
-    const { idTrab } = req.params;
+router.post('/addtoTicket/:idTicket/:idTrab',trabAuth, (req, res) => {
+    const { idTrab,idTicket } = req.params;
     const { idProd, Cantidad } = req.body;
     addProductoTOTicket(req.body, data => {
         getProductobyId(idProd, producto => {
             let nuevaCantidad = producto[0].Cantidad - Cantidad;
             updateProductoCantidad(nuevaCantidad, idProd, data => {
                 //res.send({ msg: 'Producto añadido al carrito' })
-                res.redirect(`/trabajador/getTickets/${idTrab}`)
-            });
-        });
-    });
-});
-
-router.post('/deletefromTicket/:idTicket/:idProd/:idTrab', (req, res) => {
-    const { idTrab,idProd,idTicket } = req.params;
-    getProductobyId(idProd, producto => {
-        getProductoInTicketbyId(idProd,idTicket, productoTicket =>{
-            removeProductoTicket(idProd,idTicket,data=>{
-                let nuevaCantidad = producto[0].Cantidad + productoTicket[0].cantidad;
-                updateProductoCantidad(nuevaCantidad,idProd,data=>{
-                    //res.send({msg:'Producto eliminado del carrito'});
-                    res.redirect(`/trabajador/getTickets/${idTrab}`)
+                getTicketTotalbyId(idTicket, ticket => {
+                    setTicketTotal(idTicket, ticket[0].Total, data => {
+                        //res.send({ msg: 'Ticket cerrado' });
+                        res.redirect(`/trabajador/getTickets/${idTrab}`)
+                    });
                 });
             });
         });
     });
 });
 
-router.post('/updatefromTicket/:idProd/:idTrab', (req, res) => {
+router.post('/deletefromTicket/:idTicket/:idProd/:idTrab',trabAuth, (req, res) => {
+    const { idTrab,idProd,idTicket } = req.params;
+    getProductobyId(idProd, producto => {
+        getProductoInTicketbyId(idProd,idTicket, productoTicket =>{
+            removeProductoTicket(idProd,idTicket,data=>{
+                let nuevaCantidad = producto[0].Cantidad + productoTicket[0].cantidad;
+                updateProductoCantidad(nuevaCantidad,idProd,data=>{
+                    getTicketTotalbyId(idTicket, ticket => {
+                        let totalFinal = ticket[0].Total==null?0:ticket[0].Total;
+                        setTicketTotal(idTicket,totalFinal, data => {
+                            res.redirect(`/trabajador/getTickets/${idTrab}`)
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+router.post('/updatefromTicket/:idTicket/:idProd/:idTrab',trabAuth, (req, res) => {
     const { idTrab,idProd } = req.params;
     const { idTicket, Cantidad } = req.body;
     const detalle = {Cantidad,idProd,idTicket};
@@ -68,20 +85,28 @@ router.post('/updatefromTicket/:idProd/:idTrab', (req, res) => {
                     nuevaCantidad = producto[0].Cantidad + (productoTicket[0].cantidad-Cantidad);
                 }
                 updateProductoCantidad(nuevaCantidad, idProd, data => {
-                    res.redirect(`/trabajador/getTickets/${idTrab}`)
+                    getTicketTotalbyId(idTicket, ticket => {
+                        setTicketTotal(idTicket, ticket[0].Total, data => {
+                            //res.send({ msg: 'Ticket cerrado' });
+                            res.redirect(`/trabajador/getTickets/${idTrab}`)
+                        });
+                    });
                 });
             })
         });
-    });
-    
+    });  
 });
 
-router.get('/getTicket/:idTicket/:idTrab', (req, res) => {
+router.get('/getTicket/:idTicket/:idTrab',trabAuth, (req, res) => {
     const { idTrab, idTicket } = req.params;
     getTicketsByid(idTrab, tickets => {
-        tickets.map(ticket=>{ ticket.Fecha=getParsedDate(ticket.Fecha.toString());});
+        tickets.map(ticket=>{ 
+            ticket.Fecha=getParsedDate(ticket.Fecha.toString());
+            ticket.Cerrado==1?ticket.Cerrado=true:ticket.Cerrado=false;
+        });
         getTicketbyId(idTicket, ticket => {
             const detTicket = ticket;
+            detTicket.Cerrado==1?detTicket.Cerrado=true:detTicket.Cerrado=false;
             getTicketTotalbyId(idTicket,totalTick=>{
                 let totalTicket = totalTick[0].Total;
                 res.render('tickets',{tickets,idTrab,detTicket,idTicket,totalTicket});
@@ -90,26 +115,27 @@ router.get('/getTicket/:idTicket/:idTrab', (req, res) => {
     });
 });
 
-router.get('/getTickets/:idTrab', (req, res) => {
+router.get('/getTickets/:idTrab',trabAuth, (req, res) => {
     const { idTrab } = req.params;
     getTicketsByid(idTrab, tickets => {
         //res.send(tickets);
-        tickets.map(ticket=>{ ticket.Fecha=getParsedDate(ticket.Fecha.toString());});
+        tickets.map(ticket=>{
+            ticket.Fecha=getParsedDate(ticket.Fecha.toString());
+            ticket.Cerrado==1?ticket.Cerrado=true:ticket.Cerrado=false;
+        });
         res.render('tickets',{tickets,idTrab})
     });
 });
 
-router.post('/closeTicket/:idTicket/:idTrab', (req, res) => {
+router.post('/closeTicket/:idTicket/:idTrab',trabAuth, (req, res) => {
     const { idTrab, idTicket } = req.params;
-    getTicketTotalbyId(idTicket, ticket => {
-        cerrarTicket(idTicket, ticket[0].Total, data => {
-            //res.send({ msg: 'Ticket cerrado' });
-            res.redirect(`/trabajador/getTickets/${idTrab}`)
-        });
+    cerrarTicket(idTicket, data => {
+        //res.send({ msg: 'Ticket cerrado' });
+        res.redirect(`/trabajador/getTickets/${idTrab}`)
     });
 });
 
-router.get('/getProductos/:idTicket/:idTrab', (req, res) => {
+router.get('/getProductos/:idTicket/:idTrab',trabAuth, (req, res) => {
     const { idTrab,idTicket } = req.params;
     getProductos(productos => {
         //res.send(productos);

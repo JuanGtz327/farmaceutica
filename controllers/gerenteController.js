@@ -17,7 +17,18 @@ const getGerentebyId = (idGerente,callback)=>{
     });
 };
 
+const getGerentebyUsername = (usuario,callback)=>{
+    connection.query('SELECT * FROM Administrador where usuario=?',usuario,(error, results, fields)=>{
+        if (error) throw error;
+        if(results.length>0)
+            callback(results[0]);
+        else    
+            callback(-1);
+    });
+};
+
 module.exports = {
     getGerentes,
-    getGerentebyId
+    getGerentebyId,
+    getGerentebyUsername
 }
