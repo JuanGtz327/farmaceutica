@@ -22,22 +22,22 @@ const cerrarTicket = (idTicket,total,callback)=>{
     });
 };
 
-const getTickets = (callback)=>{
-    connection.query('SELECT * FROM Ticket', (error, results, fields)=>{
+const getTicketsByid = (idTrab,callback)=>{
+    connection.query('SELECT * FROM Ticket WHERE NSS=?',idTrab, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
 }
 
 const getTicketbyId = (idTicket,callback)=>{
-    connection.query("SELECT p.Nombre,d.cantidad,p.Precio_venta*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
+    connection.query("SELECT p.id_producto,p.Nombre,d.cantidad,p.Precio_venta*d.cantidad as 'Total' FROM detalletiket d, producto p JOIN Ticket t where d.id_ticket=t.id_ticket and p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
 }
 
 const getTicketTotalbyId = (idTicket,callback)=>{
-    connection.query("SELECT sum(p.Precio_venta*d.cantidad) as 'Total' FROM detalletiket d, producto p JOIN Ticket t where p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
+    connection.query("SELECT sum(p.Precio_venta*d.cantidad) as 'Total' FROM detalletiket d, producto p JOIN Ticket t where d.id_ticket=t.id_ticket and p.id_producto=d.id_producto and t.id_ticket=?",idTicket, (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
@@ -67,8 +67,8 @@ const updateProductoTOTicket = (detalle,callback)=>{
     });
 };
 
-const removeProductoTicket = (idProd,callback)=>{
-    connection.query('DELETE FROM Detalletiket WHERE id_producto=?',[idProd],(error, results, fields)=>{
+const removeProductoTicket = (idProd,id_ticket,callback)=>{
+    connection.query('DELETE FROM Detalletiket WHERE id_producto=? and id_ticket=?',[idProd,id_ticket],(error, results, fields)=>{
         if(error){
             console.log(error);
             callback(-1,error.code);
@@ -78,8 +78,8 @@ const removeProductoTicket = (idProd,callback)=>{
     });
 };
 
-const getProductoInTicketbyId = (idProd,callback)=>{
-    connection.query("SELECT * FROM Detalletiket WHERE id_producto=?",idProd, (error, results, fields)=>{
+const getProductoInTicketbyId = (idProd,id_ticket,callback)=>{
+    connection.query("SELECT * FROM Detalletiket WHERE id_producto=? and id_ticket=?",[idProd,id_ticket], (error, results, fields)=>{
         if (error) throw error;
         callback(results);
     });
@@ -97,7 +97,7 @@ module.exports = {
     addProductoTOTicket,
     getTicketbyId,
     getTicketTotalbyId,
-    getTickets,
+    getTicketsByid,
     cerrarTicket,
     removeProductoTicket,
     getProductoInTicketbyId,

@@ -1,0 +1,67 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Lista de productos
+                </h1>
+            </div>
+            <a href="/trabajador/getTickets/{{idTrab}}" type="button" class="btn btn-success">Lista Tickets</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Gramaje</th>
+                    <th scope="col">Costo</th>
+                    <th scope="col">Precio Venta</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Fecha Caducidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {{#each productos}}
+                    <tr>
+                    <th>{{Nombre}}</th>
+                    <td>{{Cantidad}}</td>
+                    <td>{{Gramaje}}mg</td>
+                    <td>${{Costo}}</td>
+                    <td>${{Precio_venta}} </td>
+                    <td>{{Descripcion}} </td>
+                    <td>{{Fecha_caducidad}} </td>
+                    <td><a href="/trabajador/addtoTicket/{{../idTicket}}/{{id_producto}}/{{../idTrab}}" id="btnAgr_Tick" type="button" class="btn btn-success">Añadir</a></td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+            {{#if readyAdd}}
+            <div id="overlayAgr_Tick" class="overlay active">
+                <div id="popupAgr_Tick" class="popup">
+                    <a href="#" id="btnCloseAgr_Tick" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+            {{else}}         
+            <div id="overlayAgr_Tick" class="overlay">
+                <div id="popupAgr_Tick" class="popup">
+                    <a href="#" id="btnCloseAgr_Tick" class="btn-close-popup"><i class="fas fa-times"></i></a>
+            {{/if}}
+                    <h3>
+                        Ingrese la cantidad del producto
+                    </h3>
+                    <br><br>
+                    <form action="/trabajador/addtoTicket/{{idTrab}}" method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Cantidad:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="Cantidad" max="{{detProd.Cantidad}}" min="0">
+                            </div>
+                        </div>
+                        <input type="hidden" name="idProd" value="{{detProd.id_producto}}">
+                        <input type="hidden" name="idTicket" value="{{idTicket}}">
+                        <br>
+                        <button type="submit" class="btn btn-success">Añadir al ticket</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/assets/JS/popupTick.js"></script>
