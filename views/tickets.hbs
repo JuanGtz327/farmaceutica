@@ -86,13 +86,11 @@
                             </tr>
                         </tbody>
                     </table>
-                    {{#each detTicket}}
-                        {{#unless Cerrado}}
-                        <form action="/trabajador/closeTicket/{{../idTicket}}/{{../idTrab}}" method="post">
-                            <button type="submit" class="btn btn-danger">Cerrar ticket</button>
-                        </form>
-                        {{/unless}}
-                    {{/each}}
+                    {{#unless isClosed}}
+                    <form action="/trabajador/closeTicket/{{idTicket}}/{{idTrab}}" method="post">
+                        <button type="submit" class="btn btn-danger">Cerrar ticket</button>
+                    </form>
+                    {{/unless}}
                 </div>
             </div>
         </div>

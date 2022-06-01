@@ -14,8 +14,9 @@ router.get('/:idTrab',trabAuth,(req,res)=>{
 
 router.get('/crearTicket/:idTrab',trabAuth, (req, res) => {
     const { idTrab } = req.params;
-    const actDate = new Date(Date.now()).toISOString().substring(0, 10);
-    crearTicket(idTrab, actDate, data => {
+    let date = new Date();
+    let output = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    crearTicket(idTrab, output, data => {
         //res.send({ msg: 'Ticket creado' });
         res.redirect(`/trabajador/getTickets/${idTrab}`)
     });
@@ -106,10 +107,10 @@ router.get('/getTicket/:idTicket/:idTrab',trabAuth, (req, res) => {
         });
         getTicketbyId(idTicket, ticket => {
             const detTicket = ticket;
-            detTicket.Cerrado==1?detTicket.Cerrado=true:detTicket.Cerrado=false;
+            let isClosed = detTicket[0].Cerrado==1?true:false; 
             getTicketTotalbyId(idTicket,totalTick=>{
                 let totalTicket = totalTick[0].Total;
-                res.render('tickets',{tickets,idTrab,detTicket,idTicket,totalTicket});
+                res.render('tickets',{tickets,idTrab,detTicket,idTicket,totalTicket,isClosed});
             })
         });
     });

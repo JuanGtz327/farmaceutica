@@ -2,7 +2,6 @@ const express = require('express');
 const hbs = require('express-handlebars');
 const session = require('express-session');
 const passport = require('passport');
-const dotenv = require('dotenv').config();
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
