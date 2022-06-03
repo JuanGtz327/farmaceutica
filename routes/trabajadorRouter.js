@@ -107,11 +107,21 @@ router.get('/getTicket/:idTicket/:idTrab',trabAuth, (req, res) => {
         });
         getTicketbyId(idTicket, ticket => {
             const detTicket = ticket;
-            let isClosed = detTicket[0].Cerrado==1?true:false; 
-            getTicketTotalbyId(idTicket,totalTick=>{
-                let totalTicket = totalTick[0].Total;
-                res.render('tickets',{tickets,idTrab,detTicket,idTicket,totalTicket,isClosed});
-            })
+            console.log(detTicket);
+            if(ticket.length==0){
+                let isClosed = false; 
+                getTicketTotalbyId(idTicket,totalTick=>{
+                    let totalTicket = totalTick[0].Total;
+                    let emptyTicket = true;
+                    res.render('tickets',{tickets,idTrab,emptyTicket,idTicket,totalTicket,isClosed});
+                })
+            }else{
+                let isClosed = detTicket[0].Cerrado==1?true:false; 
+                getTicketTotalbyId(idTicket,totalTick=>{
+                    let totalTicket = totalTick[0].Total;
+                    res.render('tickets',{tickets,idTrab,detTicket,idTicket,totalTicket,isClosed});
+                })
+            }
         });
     });
 });

@@ -48,6 +48,7 @@ router.get('/updateProducto/:idProd/:idGer',gerAuth, (req, res) => {
         productos.map(producto=>producto.Fecha_caducidad=getParsedDate(producto.Fecha_caducidad.toString()));
         getProductobyId(idProd, producto => {
             const prodEdit = producto[0];
+            prodEdit.Fecha_caducidad=prodEdit.Fecha_caducidad.toISOString().substring(0,10);
             res.render('productos',{idGer,prodEdit,productos});
         });
     });
@@ -121,6 +122,8 @@ router.get('/updateTrabajador/:idTrab/:idGer',gerAuth, (req, res) => {
         });
         getTrabajadorbyNSS(idTrab, trabajador => {
             const trabEdit = trabajador;
+            trabEdit.Fecha_nacimiento=trabEdit.Fecha_nacimiento.toISOString().substring(0,10);
+            trabEdit.Fecha_contrato=trabEdit.Fecha_contrato.toISOString().substring(0,10);
             res.render('trabajadores',{idGer,trabEdit,trabajadores});
         });
     });

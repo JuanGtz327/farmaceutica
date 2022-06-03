@@ -37,6 +37,10 @@
             <div id="overlayAgr_Tick" class="overlay active">
                 <div id="popupAgr_Tick" class="popup">
                     <a href="#" id="btnCloseAgr_Tick" class="btn-close-popup active"><i class="fas fa-times"></i></a>
+            {{else if emptyTicket}}
+            <div id="overlayAgr_Tick" class="overlay active">
+                <div id="popupAgr_Tick" class="popup">
+                    <a href="#" id="btnCloseAgr_Tick" class="btn-close-popup active"><i class="fas fa-times"></i></a> 
             {{else}}         
             <div id="overlayAgr_Tick" class="overlay">
                 <div id="popupAgr_Tick" class="popup">
@@ -82,7 +86,11 @@
                             <tr>
                             <th></th>
                             <th>Suma</th>
+                            {{#if totalTicket}}
                             <th>${{totalTicket}}</th>
+                            {{else}}
+                            <th>$0</th>
+                            {{/if}}
                             </tr>
                         </tbody>
                     </table>

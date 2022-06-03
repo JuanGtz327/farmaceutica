@@ -9,7 +9,7 @@ connection.connect(err=>{
     if (err) {
       console.error('Error al conectar' + err.stack);
       return;
-    }   
+    }
     console.log('DB conectada');
 });
 
